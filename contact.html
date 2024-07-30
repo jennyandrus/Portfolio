@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Jennifer's Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            background: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            position: relative; /* Ensure body is relative for absolute positioning */
+        }
+
+        header {
+            background: rgba(51, 51, 51, 0.8);
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        section {
+            padding: 20px;
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+
+        footer {
+            background: rgba(51, 51, 51, 0.8);
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        #canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+        }
+
+        .social-links {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .social-links a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 24px;
+        }
+
+        .social-links a:hover {
+            color: #00f;
+        }
+
+        form {
+            position: relative; /* Ensure form is above canvas */
+            z-index: 2;
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #444;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #666;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section>
+        <div class="social-links">
+            <a href="https://www.linkedin.com/in/jenny-sibrel-andrus" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="https://github.com/jennyandrus" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+        </div>
+        <h1>Contact</h1>
+        <p>Get in touch with me.</p>
+        <form action="contact.php" method="post">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" rows="6" required></textarea>
+            
+            <button type="submit">Send Message</button>
+        </form>
+        <p>Or email me directly at: <a href="mailto:jennyandrus.codes@gmail.com" style="color: #00f;">jennyandrus.codes@gmail.com</a></p>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Jennifer. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initStars();
+        });
+
+        class Star {
+            constructor(x, y, radius, speed, opacity, direction) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.speed = speed;
+                this.opacity = opacity;
+                this.direction = direction;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.fill();
+                ctx.closePath();
+            }
+
+            update() {
+                this.y += this.speed;
+                if (this.y > canvas.height) {
+                    this.y = 0 - this.radius;
+                    this.x = Math.random() * canvas.width;
+                }
+
+                // Twinkling effect
+                if (this.direction) {
+                    this.opacity += 0.01;
+                    if (this.opacity >= 1) {
+                        this.direction = false;
+                    }
+                } else {
+                    this.opacity -= 0.01;
+                    if (this.opacity <= 0) {
+                        this.direction = true;
+                    }
+                }
+
+                this.draw();
+            }
+        }
+
+        let stars = [];
+        const numStars = 200;
+
+        function initStars() {
+            stars = [];
+            for (let i = 0; i < numStars; i++) {
+                const radius = Math.random() * 1.5;
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const speed = Math.random() * 0.5 + 0.2;
+                const opacity = Math.random();
+                const direction = Math.random() > 0.5;
+                stars.push(new Star(x, y, radius, speed, opacity, direction));
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < stars.length; i++) {
+                stars[i].update();
+            }
+        }
+
+        initStars();
+        animate();
+    </script>
+</body>
+</html>

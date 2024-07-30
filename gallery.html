@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jennifer's Portfolio - Gallery</title>
+    <style>
+        body {
+            margin: 0;
+            background: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: auto; /* Allow scrolling */
+            position: relative; /* Required for absolute positioning of the canvas */
+        }
+
+        header {
+            background: rgba(51, 51, 51, 0.8);
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            position: relative; /* Ensure header is above the canvas */
+            z-index: 1; /* Ensure header is above the canvas */
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        section {
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            z-index: 1; /* Ensure section is above the canvas */
+        }
+
+        .project {
+            margin: 20px;
+            padding: 20px;
+            background: #222;
+            border-radius: 10px;
+        }
+
+        .project img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+
+        .project h2 {
+            margin: 0 0 10px 0;
+        }
+
+        .project p {
+            font-size: 1em;
+        }
+
+        .in-progress {
+            margin-top: 30px;
+        }
+
+        /* Canvas styles */
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0; /* Ensure canvas is behind the content */
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section>
+        <h1>Gallery</h1>
+
+        <!-- Completed Projects -->
+        <div class="project">
+            <h2>Tic Tac Toe</h2>
+            <img src="images/tic-tac-toe.png" alt="Tic Tac Toe Screenshot">
+            <p>A classic Tic Tac Toe game with a simple interface and interactive gameplay.</p>
+            <a href="https://jennyandrus.github.io/Tic-Tac-Toe/">View Project</a>
+        </div>
+
+        <div class="project">
+            <h2>Rock Paper Scissors</h2>
+            <img src="images/rock-paper-scissors.png" alt="Rock Paper Scissors Screenshot">
+            <p>A fun Rock Paper Scissors game with a user-friendly design and engaging mechanics.</p>
+            <a href="https://jennyandrus.github.io/rock-paper-scissors/">View Project</a>
+        </div>
+
+        <div class="project">
+            <h2>Mental Health Prototype App</h2>
+            <p>A prototype app designed to support mental health, featuring intuitive design and practical tools for users.</p>
+            <a href="https://github.com/jennyandrus/WellnessWizard1-4">View Project</a>
+        </div>
+
+        <!-- Ongoing Projects -->
+        <div class="in-progress">
+            <h2>Ongoing Projects</h2>
+            <p>Stay tuned for updates on my latest projects:</p>
+            <ul>
+                <li>Roblox Game - Currently working on developing a game using Lua in Roblox. Follow my progress and updates on GitHub.</li>
+                <!-- Add more ongoing projects as needed -->
+            </ul>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Jennifer. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initStars();
+        });
+
+        class Star {
+            constructor(x, y, radius, speed) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.speed = speed;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = 'white';
+                ctx.fill();
+                ctx.closePath();
+            }
+
+            update() {
+                this.y += this.speed;
+                if (this.y > canvas.height) {
+                    this.y = 0 - this.radius;
+                    this.x = Math.random() * canvas.width;
+                }
+                this.draw();
+            }
+        }
+
+        let stars = [];
+        const numStars = 200;
+
+        function initStars() {
+            stars = [];
+            for (let i = 0; i < numStars; i++) {
+                const radius = Math.random() * 1.5;
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const speed = Math.random() * 0.5 + 0.2;
+                stars.push(new Star(x, y, radius, speed));
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < stars.length; i++) {
+                stars[i].update();
+            }
+        }
+
+        initStars();
+        animate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jennifer's Portfolio</title>
+    <style>
+        body {
+            margin: 0;
+            background: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: auto; /* Ensure scrolling is enabled */
+        }
+
+        header {
+            background: rgba(51, 51, 51, 0.8);
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        section {
+            padding: 20px;
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+
+        .intro {
+            margin-top: 50px;
+            font-size: 2em;
+        }
+
+        .skills {
+            margin-top: 50px;
+        }
+
+        .skills-list {
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        .learn-more {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            color: #fff;
+            background-color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .learn-more:hover {
+            background-color: #555;
+        }
+
+        footer {
+            background: rgba(51, 51, 51, 0.8);
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        #canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .twinkling-star {
+            animation: twinkling 1.5s infinite ease-in-out;
+        }
+
+        @keyframes twinkling {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="intro">
+        <h1>Welcome to Jennifer's Portfolio</h1>
+        <p>Hello! I'm Jennifer, a dedicated computer science student with a passion for software engineering. I thrive on creating functional and engaging applications and enjoy working with a variety of programming languages and technologies. Python is one of my favorite languages, and I love using it to solve problems and build innovative solutions. My journey in technology is driven by a deep fascination with problem-solving and a desire to make a meaningful impact through my work. Additionally, I am passionate about mobile app development, which allows me to explore new technologies and create solutions that are accessible on-the-go.</p>
+    </section>
+
+    <section class="skills">
+        <h2>Skills</h2>
+        <div class="skills-list">
+            HTML, CSS, JavaScript<br>
+            Python<br>
+            Vue.js<br>
+            Flask<br>
+            Machine Learning
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Jennifer. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initStars();
+        });
+
+        class Star {
+            constructor(x, y, radius, speed, opacity, direction) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.speed = speed;
+                this.opacity = opacity;
+                this.direction = direction;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.fill();
+                ctx.closePath();
+            }
+
+            update() {
+                this.y += this.speed;
+                if (this.y > canvas.height) {
+                    this.y = 0 - this.radius;
+                    this.x = Math.random() * canvas.width;
+                }
+
+                // Twinkling effect
+                if (this.direction) {
+                    this.opacity += 0.01;
+                    if (this.opacity >= 1) {
+                        this.direction = false;
+                    }
+                } else {
+                    this.opacity -= 0.01;
+                    if (this.opacity <= 0) {
+                        this.direction = true;
+                    }
+                }
+
+                this.draw();
+            }
+        }
+
+        let stars = [];
+        const numStars = 200;
+
+        function initStars() {
+            stars = [];
+            for (let i = 0; i < numStars; i++) {
+                const radius = Math.random() * 1.5;
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const speed = Math.random() * 0.5 + 0.2;
+                const opacity = Math.random();
+                const direction = Math.random() > 0.5;
+                stars.push(new Star(x, y, radius, speed, opacity, direction));
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < stars.length; i++) {
+                stars[i].update();
+            }
+        }
+
+        initStars();
+        animate();
+    </script>
+</body>
+</html>
